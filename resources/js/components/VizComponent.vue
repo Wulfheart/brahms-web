@@ -4,7 +4,7 @@
         <div>
             <div>
                 <label>Midi File</label>
-                <input type="file" name="" accept="audio/midi" v-on:change="input($event)">
+                <input type="file" name="" ref="file" accept="audio/midi" v-on:change="input($event)" v-shortkey.once="['alt', 'f']" v-on:shortkey="$refs.file.click()" >
                 <span>{{ error("midi") }}</span>
             </div>
             <div>
@@ -15,7 +15,8 @@
                 <div>
                     <button type="button" v-on:click="add">+</button>
                     <button type="button" :disabled="canSub" v-on:click="sub">-</button>
-                    <button type="button" v-on:click="randomGradient">Random Gradient</button>
+                    <button type="button" v-shortkey="['alt', 'g']" v-on:shortkey="randomGradient" v-on:click="randomGradient">Random Gradient</button>
+                    <button type="button" v-shortkey="['alt', 'r']" v-on:shortkey="colors.reverse()" v-on:click="colors.reverse()">Reverse</button>
                 </div>
                 <div>
                     <label>Fill Opacity</label>
@@ -23,7 +24,7 @@
                     <span>{{ error("fillOpacity") }}</span>
                 </div>
             </div>
-            <button type="button" v-on:click="submit">Submit</button>
+            <button type="button" v-shortkey.once="['alt', 's']" v-on:shortkey="submit" v-on:click="submit">Submit</button>
         </div>
         <div v-html="svg">
         </div>
