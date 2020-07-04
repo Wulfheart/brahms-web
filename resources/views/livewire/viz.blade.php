@@ -37,7 +37,8 @@
             </div>
             <button type="button" wire:click="viz">Submit</button>
         </div>
-        <div v-html="svg">
+        <div>
+            {!! $svg !!}
         </div>
     </div>
 </div>
