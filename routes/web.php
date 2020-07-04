@@ -18,7 +18,9 @@ use Symfony\Component\Process\Process;
 |
 */
 
-Route::livewire('/', 'viz');
+Route::get('/', function(){
+    return view('viz');
+});
 
 Route::post('visualize', function (Request $request) {
     // TODO: Validate request visually
