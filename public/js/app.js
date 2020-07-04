@@ -1959,13 +1959,16 @@ var _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE
       midi: "",
       colors: [],
       fillOpacity: 50,
-      svg: "",
+      svg: "<svg></svg>",
       errors: {}
     };
   },
   computed: {
     canSub: function canSub() {
       return this.colors.length <= 2;
+    },
+    svgDataUrl: function svgDataUrl() {
+      return "data:image/svg+xml;utf8," + encodeURIComponent(this.svg);
     }
   },
   methods: {
@@ -2515,8 +2518,8 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", [
+  return _c("div", { staticClass: "container-lg clearfix" }, [
+    _c("div", { staticClass: "col-6" }, [
       _c("div", [
         _c("label", [_vm._v("Midi File")]),
         _vm._v(" "),
@@ -2579,13 +2582,20 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("div", [
-          _c("button", { attrs: { type: "button" }, on: { click: _vm.add } }, [
-            _vm._v("+")
-          ]),
+          _c(
+            "button",
+            {
+              staticClass: "btn",
+              attrs: { type: "button" },
+              on: { click: _vm.add }
+            },
+            [_vm._v("+")]
+          ),
           _vm._v(" "),
           _c(
             "button",
             {
+              staticClass: "btn",
               attrs: { type: "button", disabled: _vm.canSub },
               on: { click: _vm.sub }
             },
@@ -2603,6 +2613,7 @@ var render = function() {
                   expression: "['alt', 'g']"
                 }
               ],
+              staticClass: "btn",
               attrs: { type: "button" },
               on: { shortkey: _vm.randomGradient, click: _vm.randomGradient }
             },
@@ -2620,6 +2631,7 @@ var render = function() {
                   expression: "['alt', 'r']"
                 }
               ],
+              staticClass: "btn",
               attrs: { type: "button" },
               on: {
                 shortkey: function($event) {
@@ -2678,7 +2690,13 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c("div", { domProps: { innerHTML: _vm._s(_vm.svg) } })
+    _c("div", { staticClass: "col-6" }, [
+      _c("img", {
+        staticClass: "width-fit",
+        staticStyle: { "object-fit": "contain" },
+        attrs: { src: _vm.svgDataUrl, alt: "" }
+      })
+    ])
   ])
 }
 var staticRenderFns = []
