@@ -5,11 +5,12 @@
             <div>
                 <label>Midi File</label>
                 <input type="file" name="" accept="audio/midi" v-on:change="input($event)">
+                <span>{{ error("midi") }}</span>
             </div>
             <div>
                 <div>
                     <input type="color" v-for="color in colors" :key="color.value" v-model="color.value">
-
+                    <span>{{ error("colors") }}</span>
                 </div>
                 <div>
                     <button type="button" v-on:click="add">+</button>
@@ -19,6 +20,7 @@
                 <div>
                     <label>Fill Opacity</label>
                     <input type="range" v-model="fillOpacity" min="10" max="100" step="5"> {{ fillOpacity / 100 }}
+                    <span>{{ error("fillOpacity") }}</span>
                 </div>
             </div>
             <button type="button" v-on:click="submit">Submit</button>
@@ -43,7 +45,8 @@
                 midi: "",
                 colors: [],
                 fillOpacity: 50,
-                svg: ""
+                svg: "",
+                errors: {},
             }
         },
         computed: {
@@ -59,25 +62,30 @@
             },
             submit: function () {
                 var bodyFormData = new FormData();
-                bodyFormData.append('midi', this.midi),
-                    bodyFormData.append('colors', this.colors.map(x => x.value)),
-                    console.log(bodyFormData)
+                bodyFormData.append('midi', this.midi);
+                bodyFormData.append('fillOpacity', this.fillOpacity);
+                bodyFormData.append('colors', this.colors.map(x => x.value));
+                console.log(bodyFormData)
                 Axios.post(this.$props.endpoint,
                         bodyFormData, {
                             'Content-Type': 'multipart/form-data'
                         })
                     .then((response) => {
                         //handle success
-                        console.log(response);
+                        this.errors = {}
                         this.svg = response.data
                     })
-                    .catch(function (response) {
+                    .catch((error) => {
                         //handle error
-                        console.error(response);
+                        console.error(error)
+                        console.log(error.response)
+                        if(error.response.status == 422) {
+                            this.errors = error.response.data.errors
+                        }
+                        console.error(error.response.data.errors);
                     });
             },
             randomGradient: function () {
-               console.log("grad")
                 this.colors = gradients[Math.floor(Math.random() * gradients.length)].colors.map(x => ({
                     value: x
                 }))
@@ -90,12 +98,18 @@
             sub: function () {
                 this.colors.pop()
             },
+            error: function(item){
+                if(this.errors[item]){
+                    return this.errors[item]
+                }
+                return null
+            }
         },
         mounted: function () {
-            
+
             // `this` points to the vm instance
             this.randomGradient()
-        }
+        },
     }
 
 </script>

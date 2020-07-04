@@ -1942,6 +1942,8 @@ var _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1956,7 +1958,8 @@ var _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE
       midi: "",
       colors: [],
       fillOpacity: 50,
-      svg: ""
+      svg: "",
+      errors: {}
     };
   },
   computed: {
@@ -1973,22 +1976,31 @@ var _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE
       var _this = this;
 
       var bodyFormData = new FormData();
-      bodyFormData.append('midi', this.midi), bodyFormData.append('colors', this.colors.map(function (x) {
+      bodyFormData.append('midi', this.midi);
+      bodyFormData.append('fillOpacity', this.fillOpacity);
+      bodyFormData.append('colors', this.colors.map(function (x) {
         return x.value;
-      })), console.log(bodyFormData);
+      }));
+      console.log(bodyFormData);
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(this.$props.endpoint, bodyFormData, {
         'Content-Type': 'multipart/form-data'
       }).then(function (response) {
         //handle success
-        console.log(response);
+        _this.errors = {};
         _this.svg = response.data;
-      })["catch"](function (response) {
+      })["catch"](function (error) {
         //handle error
-        console.error(response);
+        console.error(error);
+        console.log(error.response);
+
+        if (error.response.status == 422) {
+          _this.errors = error.response.data.errors;
+        }
+
+        console.error(error.response.data.errors);
       });
     },
     randomGradient: function randomGradient() {
-      console.log("grad");
       this.colors = _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0__[Math.floor(Math.random() * _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0__.length)].colors.map(function (x) {
         return {
           value: x
@@ -2002,6 +2014,13 @@ var _gradients_gradients_json__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE
     },
     sub: function sub() {
       this.colors.pop();
+    },
+    error: function error(item) {
+      if (this.errors[item]) {
+        return this.errors[item];
+      }
+
+      return null;
     }
   },
   mounted: function mounted() {
@@ -2507,36 +2526,42 @@ var render = function() {
               return _vm.input($event)
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _c("span", [_vm._v(_vm._s(_vm.error("midi")))])
       ]),
       _vm._v(" "),
       _c("div", [
         _c(
           "div",
-          _vm._l(_vm.colors, function(color) {
-            return _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: color.value,
-                  expression: "color.value"
-                }
-              ],
-              key: color.value,
-              attrs: { type: "color" },
-              domProps: { value: color.value },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
+          [
+            _vm._l(_vm.colors, function(color) {
+              return _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: color.value,
+                    expression: "color.value"
                   }
-                  _vm.$set(color, "value", $event.target.value)
+                ],
+                key: color.value,
+                attrs: { type: "color" },
+                domProps: { value: color.value },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(color, "value", $event.target.value)
+                  }
                 }
-              }
-            })
-          }),
-          0
+              })
+            }),
+            _vm._v(" "),
+            _c("span", [_vm._v(_vm._s(_vm.error("colors")))])
+          ],
+          2
         ),
         _vm._v(" "),
         _c("div", [
@@ -2580,7 +2605,8 @@ var render = function() {
               }
             }
           }),
-          _vm._v(" " + _vm._s(_vm.fillOpacity / 100) + "\n            ")
+          _vm._v(" " + _vm._s(_vm.fillOpacity / 100) + "\n                "),
+          _c("span", [_vm._v(_vm._s(_vm.error("fillOpacity")))])
         ])
       ]),
       _vm._v(" "),
