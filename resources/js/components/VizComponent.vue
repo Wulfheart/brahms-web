@@ -1,6 +1,6 @@
 <template>
-    <div class="container-lg clearfix">
-        <div class="col-6">
+    <div class="container-lg d-flex flex-row mt-6 mx-3">
+        <div class="col-3">
             <div>
                 <label>Midi File</label>
                 <input type="file" name="" ref="file" accept="audio/midi" v-on:change="input($event)" v-shortkey.once="['alt', 'f']" v-on:shortkey="$refs.file.click()" >
@@ -25,7 +25,7 @@
             </div>
             <button type="button" v-shortkey.once="['alt', 's']" v-on:shortkey="submit" v-on:click="submit">Submit</button>
         </div>
-        <div  class="col-6">
+        <div  class="col-9">
             <img v-bind:src="svgDataUrl" style="object-fit: contain;" class="width-fit" alt="">
         </div>
     </div>
